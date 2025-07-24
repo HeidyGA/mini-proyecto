@@ -49,8 +49,17 @@ def ordenar_encuestados_por_experticia_y_id(encuestados):
                 encuestados[i], encuestados[j] = encuestados[j], encuestados[i]
     return encuestados
 
+def bubble_sort(lista):
+    n = len(lista)
+    for i in range(n):
+        for j in range(0, n - i - 1):
+            if lista[j] > lista[j + 1]:
+                lista[j], lista[j + 1] = lista[j + 1], lista[j]
+    return lista
+
+
 def calcular_mediana(lista):
-    lista_ordenada = sorted(lista)
+    lista_ordenada = bubble_sort(lista.copy())
     n = len(lista_ordenada)
     if n % 2 == 0:
         return (lista_ordenada[n//2 - 1] + lista_ordenada[n//2]) / 2
