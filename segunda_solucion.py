@@ -1,4 +1,5 @@
-# segunda_solucion.py
+# segunda_solucion.py 
+import json
 
 def cargar_datos_como_diccionarios(ruta_archivo):
     encuestados = {}
@@ -15,8 +16,8 @@ def cargar_datos_como_diccionarios(ruta_archivo):
             temas[tema_nombre] = {}
             tema_actual = tema_nombre
         elif linea.startswith("Pregunta"):
-            pregunta_id, ids_str = linea.split(":")
-            pregunta_id = pregunta_id.split()[1]
+            pregunta_id_str, ids_str = linea.split(":")
+            pregunta_id = pregunta_id_str.replace("Pregunta", "").strip()
             temas[tema_actual][pregunta_id] = {int(id_val): True for id_val in ids_str.strip().split()}
         elif "," in linea:
             id_str, nombre, experticia, opinion = linea.split(",", 3)
@@ -28,9 +29,11 @@ def cargar_datos_como_diccionarios(ruta_archivo):
     return encuestados, temas
 
 def calcular_promedio(opiniones_vals):
+    if not opiniones_vals: return 0
     return round(sum(opiniones_vals) / len(opiniones_vals), 2)
 
 def calcular_mediana(opiniones_vals):
+    if not opiniones_vals: return 0
     datos = sorted(opiniones_vals)
     n = len(datos)
     mitad = n // 2
@@ -40,24 +43,24 @@ def calcular_mediana(opiniones_vals):
         return datos[mitad]
 
 def calcular_moda_y_frecuencia(opiniones_vals):
+    """
+    Calcula la moda y su frecuencia.
+    NUEVA REGLA: Si hay múltiples modas, devuelve la de menor valor.
+    """
     if not opiniones_vals:
-        return "No única", 0
+        return "N/A", 0
+
     frecuencia = {}
     for valor in opiniones_vals:
         frecuencia[valor] = frecuencia.get(valor, 0) + 1
-    if not frecuencia:
-        return "No única", 0
+
     max_repe = max(frecuencia.values())
-    moda_encontrada = None
-    conteo_de_modas = 0
-    for k, v in frecuencia.items():
-        if v == max_repe:
-            moda_encontrada = k
-            conteo_de_modas += 1
-    if conteo_de_modas == 1:
-        return moda_encontrada, max_repe
-    else:
-        return "No única", 0
+    modas = [valor for valor, frec in frecuencia.items() if frec == max_repe]
+    
+    moda_final = min(modas)
+    
+    return moda_final, max_repe
+# =================================================================
 
 def calcular_extremismo(opiniones_vals):
     if not opiniones_vals: return 0.0
@@ -74,7 +77,6 @@ def main():
     encuestados, temas = cargar_datos_como_diccionarios("datos_ejemplo.txt")
     print("✅ Datos cargados como diccionarios\n")
 
-    # Esta parte de la salida detallada no cambia
     for tema, preguntas in temas.items():
         print(f"{tema}:")
         for pid, ids_dict in preguntas.items():
@@ -86,7 +88,7 @@ def main():
         print(f"\n{tema}:")
         for pid, ids_dict in preguntas.items():
             opiniones_dict = {id_enc: encuestados[id_enc]["opinion"] for id_enc in ids_dict.keys()}
-            opiniones_vals = list(opiniones_dict.values()) # Convertir a lista para usar en varias funciones
+            opiniones_vals = list(opiniones_dict.values())
             num_opiniones = len(opiniones_vals)
 
             prom = calcular_promedio(opiniones_vals)
@@ -113,30 +115,22 @@ def main():
             print(f"    - Extremismo: {extremismo}%")
             print(f"    - Consenso: {consenso}%")
 
-    # =================================================================
-    # CAMBIO PRINCIPAL: Nueva función `mostrar` para el formato exacto
-    # =================================================================
     def mostrar(destacado, clave, tipo="max"):
-        # Filtra solo los resultados que tienen un valor numérico para la clave
         resultados_validos = [p for p in resultados.values() if isinstance(p[clave], (int, float))]
         if not resultados_validos:
-            return # No hacer nada si no hay resultados válidos (ej. todas las modas son "No única")
+            return
 
-        # Determina el valor máximo o mínimo
         if tipo == "max":
             valor_objetivo = max(p[clave] for p in resultados_validos)
-        else: # tipo == "min"
+        else:
             valor_objetivo = min(p[clave] for p in resultados_validos)
         
-        # Itera sobre todos los resultados válidos y imprime los que coincidan con el valor objetivo
         for p in resultados_validos:
             if p[clave] == valor_objetivo:
-                # Se construye la cadena con el formato exacto solicitado
                 print(f"📌 {destacado}: Pregunta{p['pregunta']} ({p['tema']}) → {clave.capitalize()} = {p[clave]}")
 
     print("\n🏅 Preguntas destacadas por métricas globales:\n")
 
-    # --- Llamadas a la nueva función `mostrar` para generar la salida final ---
     mostrar("Mayor promedio", "promedio", "max")
     mostrar("Menor promedio", "promedio", "min")
     mostrar("Mayor mediana", "mediana", "max")
