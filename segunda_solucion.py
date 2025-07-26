@@ -1,5 +1,4 @@
-# --- Las funciones de cálculo y carga de datos se mantienen igual ---
-# (Son las versiones correctas que ya no usan listas para el almacenamiento)
+# segunda_solucion.py
 
 def cargar_datos_como_diccionarios(ruta_archivo):
     encuestados = {}
