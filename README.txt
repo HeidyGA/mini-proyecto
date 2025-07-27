@@ -9,6 +9,8 @@ Este proyecto procesa los datos de una encuesta estructurada por temas y pregunt
 - `cargar_datos.py`: función para leer archivos de entrada
 - `utilidades.py`: funciones auxiliares para métricas y ordenamientos
 - `datos_ejemplo.txt`: archivo de entrada de prueba
+- `README.txt`: documentación del proyecto
+- `segunda_solucion.py`: la segunda solución alternativa
 
 ## Ejecución
 
