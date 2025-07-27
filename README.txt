@@ -15,3 +15,4 @@ Este proyecto procesa los datos de una encuesta estructurada por temas y pregunt
 ```bash
 python main.py
 python segunda_solucion.py
+```
