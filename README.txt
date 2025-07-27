@@ -1,7 +1,7 @@
 # Mini Proyecto - Análisis de Encuesta
 
 Este proyecto procesa los datos de una encuesta estructurada por temas y preguntas. Calcula promedios, medianas, modas, extremismo y consenso, y muestra la información ordenada como lo exige un cliente simulado.
-
+link al video de presentacion del proyecto: https://drive.google.com/file/d/1qOVm30IMl7vtIVSJobwQGKcOmhDZ7mi8/view?usp=sharing
 ## Estructura del Proyecto
 
 - `main.py`: archivo principal de ejecución
